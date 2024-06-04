@@ -1,1 +1,7 @@
 clickhouse0*/
+airfow/
+dags/
+Data/
+logs/
+plugins/
+postgres/
