@@ -22,7 +22,6 @@ x-airflow-common:
 services:
   postgres:
     image: postgres:13
-    
     ports:
       - 5432:5432
     environment:
@@ -170,7 +169,7 @@ services:
       POSTGRES_DB: source
       POSTGRES_HOST_AUTH_METHOD: 'trust'
     volumes:
-      - dwh-volume:/var/lib/postgresql/data
+      - source-db-volume:/var/lib/postgresql/data
       - ./postgres/init_scripts/:/docker-entrypoint-initdb.d/      
     healthcheck:
       test: ["CMD", "pg_isready", "-U", "airflow"]
@@ -273,8 +272,23 @@ services:
       - kafka
     networks:
       - airflow_network
+  greenplum:
+    image: pro100filipp/greenplum-with-pxf
+    container_name: greenplum
+    restart: always
+    ports:
+      - "7777:5432"
+    environment:
+      GP_DB: dwh
+      GP_USER: de
+      GP_PASSWORD: de
+    volumes:
+      - dwh-volume:/srv
+    networks:
+      - airflow_network
 volumes:
   postgres-db-volume:
+  source-db-volume:
   dwh-volume:
 networks:
   airflow_network:
